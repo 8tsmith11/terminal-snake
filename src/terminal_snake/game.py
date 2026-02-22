@@ -44,7 +44,7 @@ class World:
     def __init__(self, width: int, height: int):
         self.width: int = width
         self.height: int = height
-        self.snakes: list[Snake] = [Snake(1, 1, Direction.RIGHT)]
+        self.snakes: list[Snake] = []
 
     # Returns (list of old snake tiles, list of old heads)
     def update(self) -> tuple[list[tuple], list[tuple]]:
@@ -74,6 +74,12 @@ class World:
                 dead.append(s)
 
         return dead
+    
+
+    # Spawns a new snake at x, y, moving in direction
+    def spawn_snake(self, x: int, y: int, direction: Direction) -> Snake:
+        self.snakes.append(Snake(x, y, direction))
+        return self.snakes[-1]
 
 
 

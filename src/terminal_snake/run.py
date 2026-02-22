@@ -17,6 +17,7 @@ class GameRunner:
     
     def run(self) -> None:
         world: game.World = game.World(curses.COLS - 2, curses.LINES - 2)
+        player: game.Snake = world.spawn_snake(1, 1, game.Direction.RIGHT)
 
         self.draw_walls(world)
 
@@ -26,8 +27,16 @@ class GameRunner:
             input = self.stdscr.getch()
             if input == ord('q'):
                 break
-            elif input == curses.KEY_UP:
-                pass
+
+            # Change direction
+            elif input == curses.KEY_UP or input == ord('w'):
+                player.set_direction(game.Direction.UP)
+            elif input == curses.KEY_DOWN or input == ord('s'):
+                player.set_direction(game.Direction.DOWN)
+            elif input == curses.KEY_LEFT or input == ord('a'):
+                player.set_direction(game.Direction.LEFT)
+            elif input == curses.KEY_RIGHT or input == ord('d'):
+                player.set_direction(game.Direction.RIGHT)
             
             old_tiles, old_heads = world.update()
 
