@@ -4,6 +4,7 @@ from . import game
 
 HEAD_CHAR = '@'
 BODY_CHAR = '#'
+FOOD_CHAR = 'F'
 
 class GameRunner:
     def __init__(self, stdscr: curses.window):
@@ -40,7 +41,9 @@ class GameRunner:
             
             old_tiles, old_heads = world.update()
 
+            self.draw_food(world)
             self.draw_snakes(world, old_tiles, old_heads)
+            
 
             time.sleep(0.1)
 
@@ -78,6 +81,11 @@ class GameRunner:
         # Clear old tiles
         for tile in old_tiles:
             self.stdscr.addch(tile[1], tile[0], ' ')
+
+    def draw_food(self, world: game.World) -> None:
+        for f in world.food:
+            x, y = f
+            self.stdscr.addch(y, x, FOOD_CHAR)
 
 def main(stdscr: curses.window):
     game_runner = GameRunner(stdscr)
