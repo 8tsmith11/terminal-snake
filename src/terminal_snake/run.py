@@ -30,13 +30,13 @@ class GameRunner:
                 break
 
             # Change direction
-            elif input == curses.KEY_UP or input == ord('w'):
+            elif input == curses.KEY_UP or input == ord('w') or input == ord('W'):
                 player.set_direction(game.Direction.UP)
-            elif input == curses.KEY_DOWN or input == ord('s'):
+            elif input == curses.KEY_DOWN or input == ord('s') or input == ord('S'):
                 player.set_direction(game.Direction.DOWN)
-            elif input == curses.KEY_LEFT or input == ord('a'):
+            elif input == curses.KEY_LEFT or input == ord('a') or input == ord('A'):
                 player.set_direction(game.Direction.LEFT)
-            elif input == curses.KEY_RIGHT or input == ord('d'):
+            elif input == curses.KEY_RIGHT or input == ord('d') or input == ord('D'):
                 player.set_direction(game.Direction.RIGHT)
             
             old_tiles, old_heads = world.update()
