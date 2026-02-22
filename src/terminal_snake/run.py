@@ -29,9 +29,9 @@ class GameRunner:
             elif input == curses.KEY_UP:
                 pass
             
-            world.update()
+            old_tiles, old_heads = world.update()
 
-            self.draw_snakes(world)
+            self.draw_snakes(world, old_tiles, old_heads)
 
             time.sleep(0.1)
 
@@ -56,15 +56,21 @@ class GameRunner:
 
         self.stdscr.refresh()
 
-    def draw_snakes(self, world: game.World) -> None:
+    def draw_snakes(self, world: game.World, old_tiles, old_heads) -> None:
+        # Draw heads
         for s in world.snakes:
-            s = s.snake
-            # Draw body
-            for (x, y) in s[:-1]:
-                self.stdscr.addch(y, x, BODY_CHAR)
-            # Draw head
-            x, y = s[-1]
+            x, y = s.snake[-1]
             self.stdscr.addch(y, x, HEAD_CHAR)
+
+        # Draw bodies
+        for tile in old_heads:
+            self.stdscr.addch(tile[1], tile[0], BODY_CHAR)
+
+        # Clear old tiles
+        for tile in old_tiles:
+            self.stdscr.addch(tile[1], tile[0], ' ')
+
+
 
 
 
