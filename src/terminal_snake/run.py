@@ -1,0 +1,77 @@
+import curses
+import time
+from . import game
+
+HEAD_CHAR = '@'
+BODY_CHAR = '#'
+
+class GameRunner:
+    def __init__(self, stdscr: curses.window):
+        self.stdscr: curses.window = stdscr
+
+        # Dont wait for input
+        stdscr.nodelay(True)
+
+        # Hide the cursor
+        curses.curs_set(0)
+    
+    def run(self) -> None:
+        world: game.World = game.World(curses.COLS - 2, curses.LINES - 2)
+
+        self.draw_walls(world)
+
+        # Game loop
+        while True:
+            # User input
+            input = self.stdscr.getch()
+            if input == ord('q'):
+                break
+            elif input == curses.KEY_UP:
+                pass
+            
+            world.update()
+
+            self.draw_snakes(world)
+
+            time.sleep(0.1)
+
+    def draw_walls(self, world: game.World) -> None:
+        w, h = world.width, world.height
+
+        # Horizontal walls
+        for x in range(1, w - 1):
+            self.stdscr.addch(0, x, "-")
+            self.stdscr.addch(h - 1, x, "-")
+
+        # Vertical walls
+        for y in range(1, h - 1):
+            self.stdscr.addch(y, 0, "|")
+            self.stdscr.addch(y, w - 1, "|")
+
+        # Corners
+        self.stdscr.addch(0, 0, "+")
+        self.stdscr.addch(h - 1, 0, "+")
+        self.stdscr.addch(h - 1, w - 1, "+")
+        self.stdscr.addch(0, w - 1, "+")
+
+        self.stdscr.refresh()
+
+    def draw_snakes(self, world: game.World) -> None:
+        for s in world.snakes:
+            s = s.snake
+            # Draw body
+            for (x, y) in s[:-1]:
+                self.stdscr.addch(y, x, BODY_CHAR)
+            # Draw head
+            x, y = s[-1]
+            self.stdscr.addch(y, x, HEAD_CHAR)
+
+
+
+    
+
+
+
+def main(stdscr: curses.window):
+    game_runner = GameRunner(stdscr)
+    game_runner.run()
