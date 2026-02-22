@@ -79,14 +79,6 @@ class GameRunner:
         for tile in old_tiles:
             self.stdscr.addch(tile[1], tile[0], ' ')
 
-
-
-
-
-    
-
-
-
 def main(stdscr: curses.window):
     game_runner = GameRunner(stdscr)
     game_runner.run()

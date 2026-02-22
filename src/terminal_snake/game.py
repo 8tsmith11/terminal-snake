@@ -70,8 +70,9 @@ class World:
 
         for s in self.snakes:
             x, y = s.head()
-            if self.width - 1 <= x <= 0 or self.height - 1 <= y <= 0:
+            if self.width - 1 <= x or x <= 0 or self.height - 1 <= y or y <= 0:
                 dead.append(s)
+                s.snake.clear()
 
         return dead
     
