@@ -11,6 +11,10 @@ class Direction(enum.Enum):
 
     def __getitem__(self, i):
         return self.value[i]
+    
+    def opposite_direction(self):
+        return Direction(-self[0], -self[1])
+
 
 class Snake:
     def __init__(self, x: int, y: int, direction: Direction):
@@ -38,7 +42,8 @@ class Snake:
         return self.snake[-1]
     
     def set_direction(self, new_direction: Direction) -> None:
-        self.direction = new_direction
+        if new_direction != self.direction.opposite_direction():
+            self.direction = new_direction
 
     def next_tile(self) -> tuple[int, int]:
         """Returns the next tile that the snake will move to."""
