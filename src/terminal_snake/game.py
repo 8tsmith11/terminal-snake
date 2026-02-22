@@ -1,6 +1,7 @@
 import enum
 import random
 from typing import Optional
+from collections import deque
 
 class Direction(enum.Enum):
     UP = (0, -1)
@@ -14,10 +15,10 @@ class Direction(enum.Enum):
 class Snake:
     def __init__(self, x: int, y: int, direction: Direction):
 
-        # List representing the coordinates
+        # Deque representing the coordinates
         # of tiles occupied by the snake.
         # snake[-1] is the snake's head.
-        self.snake: list[tuple[int, int]] = [(x, y)]
+        self.snake: deque[tuple[int, int]] = deque([(x, y)])
 
         self.direction: Direction = direction
 
@@ -28,7 +29,7 @@ class Snake:
         head: tuple[int, int] = self.next_tile()
         
         # Move tail tile only if the snake was not fed (effectively grow if fed).
-        old_tail: tuple[int, int] = self.snake.pop(0) if not is_fed else None
+        old_tail: tuple[int, int] = self.snake.popleft() if not is_fed else None
 
         self.snake.append(head)
         return old_tail, old_head
