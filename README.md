@@ -1,7 +1,7 @@
 ---
 # Terminal Snake
 
-The classic snake game playae in the terminal.
+The classic snake game in the terminal.
 
 ## Installation
 
