@@ -65,6 +65,13 @@ class World:
         old_tiles = []
         old_heads = []
         food_eaten: int = 0
+
+        # Remove dead snakes
+        dead: list[Snake] = self.get_dead_snakes()
+        for d in dead:
+            old_tiles.extend(d.snake)
+        self.snakes = [s for s in self.snakes if s not in dead]
+
         for s in self.snakes:
             next: tuple[int, int] = s.next_tile()
             is_fed: bool = False
@@ -85,12 +92,6 @@ class World:
         # Respawn eaten food
         for _ in range(food_eaten):
             self.food.append(self.random_empty())
-        
-        # Remove dead snakes
-        dead: list[Snake] = self.get_dead_snakes()
-        for d in dead:
-            old_tiles.extend(d.snake)
-        self.snakes = [s for s in self.snakes if s not in dead]
 
         return old_tiles, old_heads
         
@@ -100,8 +101,8 @@ class World:
         dead: list[Snake] = []
 
         for s in self.snakes:
-            x, y = s.head()
-            if self.width - 1 <= x or x <= 0 or self.height - 1 <= y or y <= 0:
+            x, y = s.next_tile()
+            if self.is_occupied_tile(x, y):
                 dead.append(s)
                 s.snake.clear()
 
@@ -128,3 +129,10 @@ class World:
                 if x == t[0] and y == t[1]:
                     return True
         return False
+    
+    def is_occupied_tile(self, x: int, y: int) -> bool:
+        """Returns true if tile (x, y) is occupied by a wall or snake."""
+        if self.width - 1 <= x or x <= 0 or self.height - 1 <= y or y <= 0:
+            return True
+        return self.is_snake_tile(x, y)
+        
