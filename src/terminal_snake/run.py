@@ -1,10 +1,13 @@
 import curses
 import time
+from typing import Optional
 from . import game
 
 HEAD_CHAR = '@'
 BODY_CHAR = '#'
 FOOD_CHAR = 'F'
+
+SECONDS_PER_TICK: float = 0.1
 
 class GameRunner:
     def __init__(self, stdscr: curses.window):
@@ -20,6 +23,9 @@ class GameRunner:
         world: game.World = game.World(curses.COLS - 2, curses.LINES - 2)
         player: game.Snake = world.spawn_snake(1, 1, game.Direction.RIGHT)
 
+        last_tick: float = time.time()
+        direction: game.Direction = player.direction
+
         self.draw_walls(world)
 
         # Game loop
@@ -30,22 +36,25 @@ class GameRunner:
                 break
 
             # Change direction
-            elif input == curses.KEY_UP or input == ord('w') or input == ord('W'):
-                player.set_direction(game.Direction.UP)
+            if input == curses.KEY_UP or input == ord('w') or input == ord('W'):
+                direction = game.Direction.UP
             elif input == curses.KEY_DOWN or input == ord('s') or input == ord('S'):
-                player.set_direction(game.Direction.DOWN)
+                direction = game.Direction.DOWN
             elif input == curses.KEY_LEFT or input == ord('a') or input == ord('A'):
-                player.set_direction(game.Direction.LEFT)
+                direction = game.Direction.LEFT
             elif input == curses.KEY_RIGHT or input == ord('d') or input == ord('D'):
-                player.set_direction(game.Direction.RIGHT)
-            
-            old_tiles, old_heads = world.update()
+                direction = game.Direction.RIGHT
 
-            self.draw_food(world)
-            self.draw_snakes(world, old_tiles, old_heads)
-            
+            # Tick (update world) every SECONDS_PER_TICK seconds.
+            if time.time() - last_tick > SECONDS_PER_TICK:
+                # Update world
+                player.set_direction(direction)
+                old_tiles, old_heads = world.update()
+                self.draw_food(world)
+                self.draw_snakes(world, old_tiles, old_heads)
+                # Reset timer
+                last_tick = time.time()
 
-            time.sleep(0.1)
 
     def draw_walls(self, world: game.World) -> None:
         w, h = world.width, world.height
